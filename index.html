@@ -36,13 +36,17 @@
         const [hoveredCategory, setHoveredCategory] = useState(null);
 
         const vocabulary = {
-            titles: {
+            titleWords: {
                 color: '#FF1493',
-                words: ['SWEET MEMORY', 'CLASSIC BEAR', 'GENTLE MOMENT', 'HAPPY STORY', 'COZY DREAM', 'LOVELY TIME', 'PRECIOUS DAY', 'WARM FEELING', 'CUTE SMILE', 'SOFT MELODY']
+                words: ['SWEET', 'GENTLE', 'HAPPY', 'SOFT', 'LOVELY', 'COZY', 'WARM', 'CUTE', 'PRECIOUS', 'BEAUTIFUL']
+            },
+            titleNouns: {
+                color: '#FF69B4',
+                words: ['BEAR', 'MEMORY', 'MOMENT', 'STORY', 'DREAM', 'TIME', 'FEELING', 'SMILE', 'DAY', 'MELODY']
             },
             temporal: {
                 color: '#FFB6C1',
-                words: ['every day', 'each morning', 'today', 'always', 'forever', 'slowly', 'gently', 'little by little', 'season by season', 'moment by moment']
+                words: ['every day', 'each morning', 'today', 'always', 'slowly', 'gently', 'little by little', 'season by season', 'moment by moment', 'forever']
             },
             subjects: {
                 color: '#DDA0DD', 
@@ -71,15 +75,17 @@
         ];
 
         const generatePhrase = () => {
-            // Generate title
-            const title = vocabulary.titles.words[Math.floor(Math.random() * vocabulary.titles.words.length)];
+            // Generate title from two parts
+            const titleWord = vocabulary.titleWords.words[Math.floor(Math.random() * vocabulary.titleWords.words.length)];
+            const titleNoun = vocabulary.titleNouns.words[Math.floor(Math.random() * vocabulary.titleNouns.words.length)];
+            const title = `${titleWord} ${titleNoun}`;
             
             // Generate subtitle using formula
             const formula = formulas[Math.floor(Math.random() * formulas.length)];
             let subtitle = formula;
             
             Object.keys(vocabulary).forEach(category => {
-                if (category !== 'titles' && subtitle.includes(`{${category}}`)) {
+                if (category !== 'titleWords' && category !== 'titleNouns' && subtitle.includes(`{${category}}`)) {
                     const words = vocabulary[category].words;
                     const randomWord = words[Math.floor(Math.random() * words.length)];
                     subtitle = subtitle.replace(`{${category}}`, randomWord);
@@ -105,8 +111,10 @@
             const selectedValues = Object.values(selected).filter(word => word !== null);
             
             if (selectedValues.length > 0) {
-                // Generate title (use selected title or random)
-                const title = selected.titles || vocabulary.titles.words[Math.floor(Math.random() * vocabulary.titles.words.length)];
+                // Generate title from selected or random parts
+                const titleWord = selected.titleWords || vocabulary.titleWords.words[Math.floor(Math.random() * vocabulary.titleWords.words.length)];
+                const titleNoun = selected.titleNouns || vocabulary.titleNouns.words[Math.floor(Math.random() * vocabulary.titleNouns.words.length)];
+                const title = `${titleWord} ${titleNoun}`;
                 
                 // Build subtitle from selected words
                 let subtitle = '';
