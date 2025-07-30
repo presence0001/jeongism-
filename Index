@@ -1,0 +1,208 @@
+import React, { useState, useEffect } from ‘react’;
+
+const JeongismGenerator = () => {
+const [selectedWords, setSelectedWords] = useState({
+temporal: null,
+narrative: null,
+emotional: null,
+relationship: null,
+transformer: null
+});
+
+const [generatedPhrase, setGeneratedPhrase] = useState(’’);
+const [hoveredCategory, setHoveredCategory] = useState(null);
+
+const vocabulary = {
+temporal: {
+color: ‘#FFB6C1’,
+words: [‘today’, ‘every day’, ‘this moment’, ‘always’, ‘forever’, ‘slowly’, ‘gently’, ‘tomorrow’, ‘now’, ‘each time’, ‘season by season’, ‘morning’, ‘evening’, ‘again and again’, ‘little by little’]
+},
+narrative: {
+color: ‘#DDA0DD’,
+words: [‘story’, ‘memory’, ‘dream’, ‘journey’, ‘melody’, ‘song’, ‘chapter’, ‘tale’, ‘adventure’, ‘diary’, ‘book’, ‘music’, ‘harmony’, ‘note’, ‘symphony’]
+},
+emotional: {
+color: ‘#98FB98’,
+words: [‘warm’, ‘gentle’, ‘sweet’, ‘happy’, ‘cozy’, ‘soft’, ‘beautiful’, ‘lovely’, ‘peaceful’, ‘bright’, ‘curious’, ‘precious’, ‘special’, ‘wonderful’, ‘tender’]
+},
+relationship: {
+color: ‘#87CEEB’,
+words: [‘with me’, ‘together’, ‘for you’, ‘with you’, ‘our’, ‘us’, ‘side by side’, ‘close’, ‘near’, ‘hand in hand’, ‘beside’, ‘share with’, ‘give you’, ‘bring you’, ‘help you’]
+},
+transformer: {
+color: ‘#F0E68C’,
+words: [‘becomes’, ‘makes’, ‘creates’, ‘turns into’, ‘brings’, ‘flows into’, ‘grows into’, ‘transforms’, ‘builds’, ‘forms’, ‘generates’, ‘manifests’, ‘emerges as’, ‘develops into’, ‘evolves into’]
+}
+};
+
+const formulas = [
+‘{temporal} {emotional} {narrative} {transformer} {relationship}’,
+‘would you like to share {emotional} {narrative} {temporal} {relationship}?’,
+‘this {emotional} {temporal} {transformer} beautiful {narrative} {relationship}’,
+‘{relationship} {transformer} lovely {narrative} {temporal}’,
+‘{emotional} {narrative} {transformer} precious memories {relationship} {temporal}’
+];
+
+const generatePhrase = () => {
+const formula = formulas[Math.floor(Math.random() * formulas.length)];
+let phrase = formula;
+
+```
+Object.keys(vocabulary).forEach(category => {
+  if (phrase.includes(`{${category}}`)) {
+    const words = vocabulary[category].words;
+    const randomWord = words[Math.floor(Math.random() * words.length)];
+    phrase = phrase.replace(`{${category}}`, randomWord);
+  }
+});
+
+// Clean up extra spaces and capitalize first letter
+phrase = phrase.replace(/\s+/g, ' ').trim();
+phrase = phrase.charAt(0).toUpperCase() + phrase.slice(1);
+
+setGeneratedPhrase(phrase);
+```
+
+};
+
+const selectWord = (category, word) => {
+setSelectedWords(prev => ({
+…prev,
+[category]: word
+}));
+};
+
+const generateCustomPhrase = () => {
+const selected = selectedWords;
+if (Object.values(selected).some(word => word !== null)) {
+let phrase = ‘’;
+if (selected.temporal) phrase += selected.temporal + ’ ’;
+if (selected.emotional) phrase += selected.emotional + ’ ’;
+if (selected.narrative) phrase += selected.narrative + ’ ’;
+if (selected.transformer) phrase += selected.transformer + ’ ’;
+if (selected.relationship) phrase += selected.relationship;
+
+```
+  phrase = phrase.trim();
+  phrase = phrase.charAt(0).toUpperCase() + phrase.slice(1);
+  setGeneratedPhrase(phrase);
+}
+```
+
+};
+
+const clearSelection = () => {
+setSelectedWords({
+temporal: null,
+narrative: null,
+emotional: null,
+relationship: null,
+transformer: null
+});
+setGeneratedPhrase(’’);
+};
+
+return (
+<div className="w-full max-w-6xl mx-auto p-6 bg-gradient-to-br from-pink-50 to-blue-50 rounded-xl">
+<div className="text-center mb-8">
+<h1 className="text-3xl font-bold text-gray-800 mb-2">Jeongism Generator</h1>
+<p className="text-gray-600">Create authentic Korean aesthetic English phrases</p>
+</div>
+
+```
+  {/* Generated Phrase Display */}
+  <div className="mb-8 p-6 bg-white rounded-lg shadow-lg text-center">
+    <h2 className="text-xl font-semibold mb-4 text-gray-700">Generated Phrase:</h2>
+    <div className="text-2xl font-light text-gray-800 italic min-h-[3rem] flex items-center justify-center border-2 border-dashed border-gray-200 rounded-lg">
+      {generatedPhrase || 'Click words below or generate randomly...'}
+    </div>
+  </div>
+
+  {/* Control Buttons */}
+  <div className="flex justify-center gap-4 mb-8">
+    <button 
+      onClick={generatePhrase}
+      className="px-6 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors shadow-md"
+    >
+      Generate Random Jeongism
+    </button>
+    <button 
+      onClick={generateCustomPhrase}
+      className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors shadow-md"
+    >
+      Build Custom Phrase
+    </button>
+    <button 
+      onClick={clearSelection}
+      className="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors shadow-md"
+    >
+      Clear All
+    </button>
+  </div>
+
+  {/* Word Clusters */}
+  <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+    {Object.entries(vocabulary).map(([category, data]) => (
+      <div 
+        key={category}
+        className="bg-white rounded-lg shadow-lg p-4 hover:shadow-xl transition-shadow"
+        onMouseEnter={() => setHoveredCategory(category)}
+        onMouseLeave={() => setHoveredCategory(null)}
+      >
+        <h3 
+          className="text-lg font-semibold mb-4 text-center capitalize"
+          style={{ color: data.color }}
+        >
+          {category}
+        </h3>
+        <div className="flex flex-wrap gap-2">
+          {data.words.map((word, index) => (
+            <button
+              key={index}
+              onClick={() => selectWord(category, word)}
+              className={`px-3 py-1 rounded-full text-sm transition-all transform hover:scale-105 ${
+                selectedWords[category] === word 
+                  ? 'text-white shadow-lg scale-105' 
+                  : 'text-gray-700 hover:text-white'
+              }`}
+              style={{ 
+                backgroundColor: selectedWords[category] === word 
+                  ? data.color 
+                  : hoveredCategory === category 
+                    ? data.color + '40'
+                    : data.color + '20',
+                borderColor: data.color,
+                borderWidth: '1px'
+              }}
+            >
+              {word}
+            </button>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+
+  {/* Formula Examples */}
+  <div className="mt-8 p-6 bg-white rounded-lg shadow-lg">
+    <h3 className="text-lg font-semibold mb-4 text-gray-700">Formula Examples:</h3>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {formulas.map((formula, index) => (
+        <div key={index} className="p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
+          {formula}
+        </div>
+      ))}
+    </div>
+  </div>
+
+  {/* Legend */}
+  <div className="mt-6 text-center text-sm text-gray-500">
+    <p>Click words to build custom phrases • Colors represent word categories • Based on 1990s Korean aesthetic English patterns</p>
+  </div>
+</div>
+```
+
+);
+};
+
+export default JeongismGenerator;
