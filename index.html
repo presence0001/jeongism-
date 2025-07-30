@@ -10,11 +10,89 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-        }
-    </style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap');
+
+```
+    body {
+        margin: 0;
+        font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+        background: linear-gradient(135deg, #ffeef8 0%, #f0e6ff 30%, #e6f3ff 60%, #fff0f5 100%);
+        min-height: 100vh;
+    }
+    
+    .stationery-pattern {
+        background-image: 
+            radial-gradient(circle at 20% 50%, rgba(255, 182, 193, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(221, 160, 221, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 40% 80%, rgba(152, 251, 152, 0.1) 0%, transparent 50%);
+    }
+    
+    .korean-border {
+        border: 3px solid;
+        border-image: linear-gradient(45deg, #ffb6c1, #dda0dd, #98fb98, #87ceeb) 1;
+        border-radius: 15px;
+    }
+    
+    .phrase-display {
+        background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+        border: 2px dashed #d1d5db;
+        border-radius: 12px;
+        position: relative;
+    }
+    
+    .phrase-display::before {
+        content: '';
+        position: absolute;
+        top: -5px;
+        left: 20px;
+        right: 20px;
+        height: 2px;
+        background: linear-gradient(90deg, #ffb6c1, #dda0dd, #98fb98, #87ceeb);
+        border-radius: 1px;
+    }
+    
+    .word-button {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .word-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        transition: left 0.5s;
+    }
+    
+    .word-button:hover::before {
+        left: 100%;
+    }
+    
+    .category-card {
+        background: linear-gradient(135deg, #ffffff 0%, #fefefe 100%);
+        border-radius: 15px;
+        box-shadow: 
+            0 4px 6px rgba(0, 0, 0, 0.07),
+            0 1px 3px rgba(0, 0, 0, 0.06),
+            inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+    
+    .korean-title {
+        background: linear-gradient(135deg, #ff6b9d, #c44569);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: 0 2px 4px rgba(255, 107, 157, 0.3);
+    }
+</style>
+```
+
 </head>
 <body>
     <div id="root"></div>
@@ -134,7 +212,8 @@
 
         const clearSelection = () => {
             setSelectedWords({
-                titles: null,
+                titleWords: null,
+                titleNouns: null,
                 temporal: null,
                 subjects: null,
                 actions: null,
@@ -145,7 +224,7 @@
         };
 
         return React.createElement('div', {
-            className: "w-full max-w-6xl mx-auto p-6 bg-gradient-to-br from-pink-50 to-blue-50 rounded-xl min-h-screen"
+            className: "w-full max-w-6xl mx-auto p-6 stationery-pattern min-h-screen"
         }, [
             React.createElement('div', {
                 key: 'header',
@@ -153,38 +232,47 @@
             }, [
                 React.createElement('h1', {
                     key: 'title',
-                    className: "text-3xl font-bold text-gray-800 mb-2"
-                }, "Jeongism Generator"),
+                    className: "text-4xl md:text-5xl font-bold korean-title mb-3"
+                }, "✿ Jeongism Generator ✿"),
                 React.createElement('p', {
                     key: 'subtitle',
-                    className: "text-gray-600"
-                }, "Create authentic Korean aesthetic English phrases")
+                    className: "text-lg text-gray-600 font-light"
+                }, "create authentic Korean aesthetic English phrases"),
+                React.createElement('div', {
+                    key: 'decoration',
+                    className: "mt-4 flex justify-center space-x-2"
+                }, ['♡', '✧', '◌', '✧', '♡'].map((symbol, i) => 
+                    React.createElement('span', {
+                        key: i,
+                        className: "text-pink-300 text-xl"
+                    }, symbol)
+                ))
             ]),
 
             // Generated Phrase Display
             React.createElement('div', {
                 key: 'display',
-                className: "mb-8 p-6 bg-white rounded-lg shadow-lg text-center"
+                className: "mb-8 p-8 korean-border category-card text-center"
             }, [
                 React.createElement('h2', {
                     key: 'label',
-                    className: "text-xl font-semibold mb-4 text-gray-700"
-                }, "Generated Phrase:"),
+                    className: "text-xl font-semibold mb-6 text-gray-700"
+                }, "✧ Generated Phrase ✧"),
                 React.createElement('div', {
                     key: 'phrase',
-                    className: "text-center min-h-[4rem] flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg p-4"
+                    className: "phrase-display text-center min-h-[5rem] flex flex-col items-center justify-center p-6"
                 }, generatedPhrase ? [
                     React.createElement('div', {
                         key: 'title',
-                        className: "text-2xl font-bold text-gray-800 mb-2"
+                        className: "text-3xl font-bold text-gray-800 mb-3 tracking-wider"
                     }, generatedPhrase.split('\n')[0]),
                     React.createElement('div', {
                         key: 'subtitle',
-                        className: "text-lg font-light text-gray-600 italic"
+                        className: "text-lg font-light text-gray-600 italic leading-relaxed"
                     }, generatedPhrase.split('\n')[1])
                 ] : React.createElement('div', {
                     className: "text-xl font-light text-gray-400 italic"
-                }, 'Click words below or generate randomly...'))
+                }, '♡ click words below or generate randomly ♡'))
             ]),
 
             // Control Buttons
@@ -195,18 +283,18 @@
                 React.createElement('button', {
                     key: 'random',
                     onClick: generatePhrase,
-                    className: "px-6 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors shadow-md"
-                }, "Generate Random Jeongism"),
+                    className: "px-8 py-4 bg-gradient-to-r from-pink-400 to-pink-500 text-white rounded-full hover:from-pink-500 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-medium"
+                }, "✧ Generate Random Jeongism ✧"),
                 React.createElement('button', {
                     key: 'custom',
                     onClick: generateCustomPhrase,
-                    className: "px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors shadow-md"
-                }, "Build Custom Phrase"),
+                    className: "px-8 py-4 bg-gradient-to-r from-purple-400 to-purple-500 text-white rounded-full hover:from-purple-500 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-medium"
+                }, "♡ Build Custom Phrase ♡"),
                 React.createElement('button', {
                     key: 'clear',
                     onClick: clearSelection,
-                    className: "px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors shadow-md"
-                }, "Clear All")
+                    className: "px-8 py-4 bg-gradient-to-r from-gray-400 to-gray-500 text-white rounded-full hover:from-gray-500 hover:to-gray-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-medium"
+                }, "◌ Clear All ◌")
             ]),
 
             // Word Clusters
@@ -216,15 +304,15 @@
             }, Object.entries(vocabulary).map(([category, data]) => 
                 React.createElement('div', {
                     key: category,
-                    className: "bg-white rounded-lg shadow-lg p-4 hover:shadow-xl transition-shadow",
+                    className: "category-card p-5 hover:shadow-xl transition-all duration-300 transform hover:scale-105",
                     onMouseEnter: () => setHoveredCategory(category),
                     onMouseLeave: () => setHoveredCategory(null)
                 }, [
                     React.createElement('h3', {
                         key: 'title',
-                        className: "text-lg font-semibold mb-4 text-center capitalize",
+                        className: "text-lg font-bold mb-4 text-center capitalize",
                         style: { color: data.color }
-                    }, category),
+                    }, category.replace(/([A-Z])/g, ' $1').trim()),
                     React.createElement('div', {
                         key: 'words',
                         className: "flex flex-wrap gap-2"
@@ -232,9 +320,9 @@
                         React.createElement('button', {
                             key: index,
                             onClick: () => selectWord(category, word),
-                            className: `px-3 py-1 rounded-full text-sm transition-all transform hover:scale-105 ${
+                            className: `word-button px-4 py-2 text-sm transition-all duration-300 transform hover:scale-110 ${
                                 selectedWords[category] === word 
-                                    ? 'text-white shadow-lg scale-105' 
+                                    ? 'text-white shadow-lg scale-110' 
                                     : 'text-gray-700 hover:text-white'
                             }`,
                             style: { 
@@ -244,7 +332,8 @@
                                         ? data.color + '40'
                                         : data.color + '20',
                                 borderColor: data.color,
-                                borderWidth: '1px'
+                                borderWidth: '2px',
+                                borderStyle: 'solid'
                             }
                         }, word)
                     ))
